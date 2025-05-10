@@ -45,12 +45,12 @@ exports.loginUser = async (req, res) => {
   const { correo, password } = req.body;
 
   if (!correo || !password) {
-    return res.status(400).json({ error: 'Nombre de usuario y contraseña son requeridos' });
+    return res.status(400).json({ error: 'Correo y contraseña son requeridos' });
   }
 
   try {
     // Buscar el usuario en la base de datos
-    const result = await pool.query('SELECT * FROM usuarios WHERE correo = $1', [username]);
+    const result = await pool.query('SELECT * FROM usuarios WHERE correo = $1', [correo]);
     const user = result.rows[0];
 
     if (!user) {
