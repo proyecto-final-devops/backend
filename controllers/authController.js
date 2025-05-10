@@ -4,15 +4,15 @@ const pool = require('../db');  // Asegúrate de tener esta conexión configurad
 
 // Registrar un usuario
 exports.registerUser = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, correo } = req.body;
 
-  if (!username || !password) {
+  if (!username && !password && !correo) {
     return res.status(400).json({ error: 'Nombre de usuario y contraseña son requeridos' });
   }
 
   try {
     // Verificar si el usuario ya existe
-    const result = await pool.query('SELECT * FROM usuarios WHERE correo = $1', [username]);
+    const result = await pool.query('SELECT * FROM usuarios WHERE correo = $1', [correo]);
     if (result.rows.length > 0) {
       return res.status(400).json({ error: 'El usuario ya existe' });
     }
@@ -23,15 +23,15 @@ exports.registerUser = async (req, res) => {
 
     // Insertar el nuevo usuario en la base de datos
     const insertResult = await pool.query(
-      'INSERT INTO usuarios (correo, password) VALUES ($1, $2) RETURNING *',
-      [username, hashedPassword]
+      'INSERT INTO usuarios (nombre ,correo, password) VALUES ($1, $2, $3) RETURNING *',
+      [username, correo, hashedPassword]
     );
 
     // Responder con el usuario creado (sin la contraseña)
     const user = insertResult.rows[0];
     res.status(201).json({
       id: user.id,
-      username: user.correo,  // o username, depende de tu estructura
+      username: user.correo, 
       message: 'Usuario registrado exitosamente'
     });
   } catch (err) {
