@@ -9,15 +9,25 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "1. Construir la imagen Docker:\r    ```bash\r    docker build -t backend .\r    ```",
   "dependencies": {
     "backend": "file:",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.15.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/proyecto-final-devops/backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/proyecto-final-devops/backend/issues"
+  },
+  "homepage": "https://github.com/proyecto-final-devops/backend#readme"
 }

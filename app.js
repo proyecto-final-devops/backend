@@ -8,13 +8,15 @@ const usuariosRoutes = require('./routes/usuarios');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use('/api/usuarios', usuariosRoutes);
-
 app.use(cors({
-  origin: 'http://localhost:4200', // Cambia esto al dominio de tu frontend en producción
+  origin: 'http://localhost:4200', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
+
+app.use('/api/usuarios', usuariosRoutes);
+
+
 app.use(express.json());
 
 app.use('/api/productos', productosRoutes);
