@@ -35,6 +35,8 @@ const eliminarProducto = async (id) => {
   await pool.query('DELETE FROM productos WHERE id = $1', [id]);
 };
 
+
+
 module.exports = {
   getProductos,
   getProductoById,

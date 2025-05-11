@@ -47,3 +47,40 @@ exports.deleteProduct = async (req, res) => {
     res.status(400).send('Error al eliminar producto');
   }
 };
+
+exports.buyProduct = async (req, res) => {
+  try {
+    const { id, cantidad } = req.body;
+
+    // Verificar si la cantidad es válida
+    if (cantidad <= 0) {
+      return res.status(400).send('La cantidad debe ser mayor a 0');
+    }
+
+    // Verificar si el producto existe y obtener el stock actual
+    const producto = await Producto.getProductoById(id);
+    if (!producto) {
+      return res.status(404).send('Producto no encontrado');
+    }
+
+    if (producto.stock < cantidad) {
+      return res.status(400).send('No hay suficiente stock disponible');
+    }
+
+    // Actualizar el stock en la base de datos
+    const nuevoStock = producto.stock - cantidad;
+    const productoActualizado = await Producto.actualizarProducto(id, {
+      ...producto,
+      stock: nuevoStock,
+    });
+
+    // Responder con el nuevo stock
+    res.json({
+      mensaje: 'Compra realizada con éxito',
+      nuevoStock: productoActualizado.stock,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al procesar la compra');
+  }
+};
