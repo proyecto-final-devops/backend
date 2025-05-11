@@ -23,8 +23,8 @@ exports.registerUser = async (req, res) => {
 
     // Insertar el nuevo usuario en la base de datos
     const insertResult = await pool.query(
-      'INSERT INTO usuarios (nombre ,correo, password, tipo_usuario) VALUES ($1, $2, $3, $4) RETURNING *',
-      [username, correo, hashedPassword, tipo_usuario]
+      'INSERT INTO usuarios (nombre ,correo, password, tipo_usuario, tipo_usuario) VALUES ($1, $2, $3, $4, $4) RETURNING *',
+      [username, correo, hashedPassword, tipo_usuario, tipo_usuario]
     );
 
     // Responder con el usuario creado (sin la contraseña)
@@ -33,6 +33,7 @@ exports.registerUser = async (req, res) => {
       id: user.id,
       username: user.correo, 
       
+      tipo_usuario: user.tipo_usuario,
       message: 'Usuario registrado exitosamente'
     });
   } catch (err) {
@@ -64,12 +65,9 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
 
-    // Generar un token JWT
-    const token = jwt.sign({ _id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     // Responder con el token y tipo_usuario
     res.status(200).json({
-      token,
       correo: user.correo,
       tipo_usuario: user.tipo_usuario
     });
