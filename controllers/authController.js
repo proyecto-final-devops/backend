@@ -4,9 +4,9 @@ const pool = require('../db');  // Asegúrate de tener esta conexión configurad
 
 // Registrar un usuario
 exports.registerUser = async (req, res) => {
-  const { username, password, correo } = req.body;
+  const { username, password, correo, tipo_usuario } = req.body;
 
-  if (!username && !password && !correo) {
+  if (!username && !password && !correo && !tipo_usuario) {
     return res.status(400).json({ error: 'Nombre de usuario y contraseña son requeridos' });
   }
 
@@ -23,8 +23,8 @@ exports.registerUser = async (req, res) => {
 
     // Insertar el nuevo usuario en la base de datos
     const insertResult = await pool.query(
-      'INSERT INTO usuarios (nombre ,correo, password) VALUES ($1, $2, $3) RETURNING *',
-      [username, correo, hashedPassword]
+      'INSERT INTO usuarios (nombre ,correo, password, tipo_usuario) VALUES ($1, $2, $3, $4) RETURNING *',
+      [username, correo, hashedPassword, tipo_usuario]
     );
 
     // Responder con el usuario creado (sin la contraseña)
@@ -32,6 +32,7 @@ exports.registerUser = async (req, res) => {
     res.status(201).json({
       id: user.id,
       username: user.correo, 
+      
       message: 'Usuario registrado exitosamente'
     });
   } catch (err) {
@@ -66,8 +67,12 @@ exports.loginUser = async (req, res) => {
     // Generar un token JWT
     const token = jwt.sign({ _id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Responder con el token
-    res.status(200).json({ token });
+    // Responder con el token y tipo_usuario
+    res.status(200).json({
+      token,
+      correo: user.correo,
+      tipo_usuario: user.tipo_usuario
+    });
   } catch (err) {
     console.error('Error al iniciar sesión:', err);
     res.status(500).json({ error: 'Error al iniciar sesión' });
