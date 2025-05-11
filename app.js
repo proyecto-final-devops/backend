@@ -16,7 +16,11 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api/auth', usuariosRoutes);
-                                                  
+app.use('/api/usuarios', usuariosRoutes);                                                                                          
+
+  app.use('/api/usuarios', usuariosRoutes);                                                                                          
+
+                                                
 app.use('/api/usuarios', usuariosRoutes);                                                                                          
 
 app.use('/api/productos', productosRoutes);

@@ -49,24 +49,26 @@ exports.loginUser = async (req, res) => {
   }
 
   try {
-    // Buscar el usuario en la base de datos
+// Buscar el usuario en la base de datos
     const result = await pool.query('SELECT * FROM usuarios WHERE correo = $1', [correo]);
     const user = result.rows[0];
 
     if (!user) {
       return res.status(400).json({ error: 'Usuario no encontrado' });
     }
-
     // Comparar la contraseña ingresada con la almacenada
+
+
+// Comparar la contraseña ingresada con la almacenada
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
 
-    // Generar un token JWT
+// Generar un token JWT
     const token = jwt.sign({ _id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Responder con el token
+// Responder con el token
     res.status(200).json({ token });
   } catch (err) {
     console.error('Error al iniciar sesión:', err);
