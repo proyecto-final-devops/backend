@@ -6,7 +6,7 @@ const pool = require('../db');  // Asegúrate de tener esta conexión configurad
 exports.registerUser = async (req, res) => {
   const { username, password, correo, tipo_usuario } = req.body;
 
-  if (!username && !password && !correo && !tipo_usuario) {
+  if (!username || !password || !correo || !tipo_usuario) {
     return res.status(400).json({ error: 'Nombre de usuario y contraseña son requeridos' });
   }
 
@@ -23,16 +23,16 @@ exports.registerUser = async (req, res) => {
 
     // Insertar el nuevo usuario en la base de datos
     const insertResult = await pool.query(
-      'INSERT INTO usuarios (nombre ,correo, password, tipo_usuario, tipo_usuario) VALUES ($1, $2, $3, $4, $4) RETURNING *',
-      [username, correo, hashedPassword, tipo_usuario, tipo_usuario]
+      'INSERT INTO usuarios (nombre ,correo, password, tipo_usuario) VALUES ($1, $2, $3, $4) RETURNING *',
+      [username, correo, hashedPassword, tipo_usuario]
     );
 
     // Responder con el usuario creado (sin la contraseña)
     const user = insertResult.rows[0];
     res.status(201).json({
       id: user.id,
-      username: user.correo, 
-      
+      correo: user.correo,
+      username: user.nombre, 
       tipo_usuario: user.tipo_usuario,
       message: 'Usuario registrado exitosamente'
     });
