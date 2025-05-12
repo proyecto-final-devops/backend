@@ -6,6 +6,8 @@ const pool = require('../db');  // Asegúrate de tener esta conexión configurad
 exports.registerUser = async (req, res) => {
   const { username, password, correo, tipo_usuario } = req.body;
 
+  console.log('Datos recibidos en el backend:', req.body); // Log para depuración
+
   if (!username || !password || !correo || !tipo_usuario) {
     return res.status(400).json({ error: 'Nombre de usuario y contraseña son requeridos' });
   }
@@ -29,6 +31,8 @@ exports.registerUser = async (req, res) => {
 
     // Responder con el usuario creado (sin la contraseña)
     const user = insertResult.rows[0];
+    console.log('Usuario registrado exitosamente:', user); // Log para depuración
+
     res.status(201).json({
       id: user.id,
       correo: user.correo,

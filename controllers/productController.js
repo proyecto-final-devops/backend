@@ -42,9 +42,9 @@ exports.deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {
     await Producto.eliminarProducto(id);
-    res.status(200).send('Producto eliminado');
+    res.status(200).json({ mensaje: 'Producto eliminado' });
   } catch (err) {
-    res.status(400).send('Error al eliminar producto');
+    res.status(400).json({ error: 'Error al eliminar producto' });
   }
 };
 
