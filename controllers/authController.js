@@ -2,6 +2,20 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../db');  // Asegúrate de tener esta conexión configurada
 
+// Generar token JWT
+function generateToken(user) {
+  return jwt.sign(
+    {
+      id: user.id,
+      correo: user.correo,
+      tipo_usuario: user.tipo_usuario,
+      nombre: user.nombre,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '2h' }
+  );
+}
+
 // Registrar un usuario
 exports.registerUser = async (req, res) => {
   const { username, password, correo, tipo_usuario } = req.body;
@@ -33,11 +47,14 @@ exports.registerUser = async (req, res) => {
     const user = insertResult.rows[0];
     console.log('Usuario registrado exitosamente:', user); // Log para depuración
 
+    const token = generateToken(user);
+
     res.status(201).json({
       id: user.id,
       correo: user.correo,
       username: user.nombre, 
       tipo_usuario: user.tipo_usuario,
+      token, 
       message: 'Usuario registrado exitosamente'
     });
   } catch (err) {
@@ -69,11 +86,13 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
 
+    const token = generateToken(user);
 
     // Responder con el token y tipo_usuario
     res.status(200).json({
       correo: user.correo,
-      tipo_usuario: user.tipo_usuario
+      tipo_usuario: user.tipo_usuario,
+      token 
     });
   } catch (err) {
     console.error('Error al iniciar sesión:', err);

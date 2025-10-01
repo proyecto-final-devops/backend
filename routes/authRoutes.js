@@ -1,6 +1,7 @@
 // Importar dependencias
 const express = require('express');
 const router = express.Router();
+const authenticate = require('../middleware/auth');
 
 // Controladores
 const authController = require('../controllers/authController');
@@ -11,7 +12,7 @@ router.post('/register', authController.registerUser);
 router.post('/login', authController.loginUser);
 
 // Ruta protegida para obtener perfil del usuario
-router.get('/perfil', /*verificarToken,*/ perfilController.obtenerPerfil);
+router.get('/perfil', authenticate, perfilController.obtenerPerfil);
 
 module.exports = router;
 
